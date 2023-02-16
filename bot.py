@@ -4,14 +4,16 @@ import json
 import re
 
 
-CHAT_ID = 1694246507
-SHMA_ID = 200164142
-TIMEOUT_SHMA = 10
-TIMEOUT_PEOPLE = 3
-
-
+# Get your credentials from https://my.telegram.org/apps and place in `credentials.json`
 with open("credentials.json") as file:
     credentials = json.load(file)
+
+
+CHAT_ID = 1694246507
+SHMA_ID = 200164142
+
+TIMEOUT_SHMA = 10
+TIMEOUT_PEOPLE = 3
 
 api_id = credentials["api_id"]
 api_hash = credentials["api_hash"]
@@ -19,15 +21,14 @@ client = TelegramClient("session", api_id, api_hash)
 
 
 async def send_notify_msg_to_chat(msg: str):
-    message_entity = await client.send_message(
-        entity=CHAT_ID, message=msg, silent=True)
-    print(f"notify message [{message_entity.id}] send")
+    message_entity = await client.send_message(entity=CHAT_ID, message=msg, silent=True)
+    print(f"Notify message [{message_entity.id}] send")
     return message_entity
 
 
 async def delete_msg(message_entity):
     await client.delete_messages(entity=CHAT_ID, message_ids=[message_entity.id])
-    print(f"notify message [{message_entity.id}] deleted")
+    print(f"Notify message [{message_entity.id}] deleted")
 
 
 @client.on(events.NewMessage(chats=CHAT_ID))
