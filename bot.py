@@ -25,9 +25,15 @@ client = TelegramClient("session", settings["api_id"], settings["api_hash"])
 #     return message_entity
 
 
-# async def delete_msg(message_entity):
-#     await client.delete_messages(entity=CHAT_ID, message_ids=[message_entity.id])
-#     print(f"Notify message [{message_entity.id}] deleted")
+async def delete_msg(message_id):
+    for _ in range(5):
+        try:
+            await client.delete_messages(entity=CHAT_ID, message_ids=[message_id])
+            break
+        except Exception as e:
+            print(e)
+            client.get_dialogs()
+            sleep(3)
 
 
 @client.on(events.NewMessage(chats=CHAT_ID))
@@ -45,16 +51,16 @@ async def my_event_handler(event):
         )):
             print(f"Deleting message from SHMALALA after {TIMEOUT_SHMA} seconds")
             sleep(TIMEOUT_SHMA)
-            await client.delete_messages(entity=CHAT_ID, message_ids=[message_id])
+            await delete_msg(message_id)
     else:
         if any((
             re.match(r"^(?:@shmalala_bot)?\s*Шма\s*.*рыбалка", message, re.IGNORECASE | re.DOTALL),
             re.match(r"^(?:@shmalala_bot)?\s*(?:Шма)?\s*.*Дуэль", message, re.IGNORECASE | re.DOTALL)
         )):
-            username = (await event.get_sender()).username
-            print(f"Deleting message from {username} after {TIMEOUT_PEOPLE} seconds")
+            # username = (await event.get_sender()).username
+            print(f"Deleting message from {user_id} after {TIMEOUT_PEOPLE} seconds")
             sleep(TIMEOUT_PEOPLE)
-            await client.delete_messages(entity=CHAT_ID, message_ids=[message_id])
+            await delete_msg(message_id)
 
 client.start()
 print("Starting...")
