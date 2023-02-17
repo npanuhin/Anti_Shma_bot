@@ -55,7 +55,11 @@ async def my_event_handler(event):
     else:
         if any((
             re.match(r"^(?:@shmalala_bot)?\s*Шма\s*.*рыбалка", message, re.IGNORECASE | re.DOTALL),
-            re.match(r"^(?:@shmalala_bot)?\s*(?:Шма)?\s*.*Дуэль", message, re.IGNORECASE | re.DOTALL)
+            re.match(r"^(?:@shmalala_bot)?\s*Шма\s*.*лови\s*рыбу", message, re.IGNORECASE | re.DOTALL),
+            re.match(r"^(?:@shmalala_bot)?\s*(?:Шма)?\s*.*Дуэль", message, re.IGNORECASE | re.DOTALL),
+            re.match(r"^(?:@shmalala_bot)?\s*(?:Шма)?\s*.*топ\s+(богачей|богатых)", message, re.IGNORECASE | re.DOTALL),
+            re.match(r"^(?:@shmalala_bot)?\s*(?:Шма)?\s*(мяу|гав)", message, re.IGNORECASE | re.DOTALL),
+            re.match(r"^(?:@shmalala_bot)?\s*Шма\s*.*покажи\s*(собаку|кота|кошку)", message, re.IGNORECASE | re.DOTALL)
         )):
             # username = (await event.get_sender()).username
             print(f"Deleting message from {user_id} after {TIMEOUT_PEOPLE} seconds")
