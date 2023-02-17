@@ -1,3 +1,6 @@
-/credentials.json
+# Credentials & settings
+/settings.json
+
+# Session files
 *.session
 *.session-journal
