@@ -37,14 +37,19 @@ async def my_event_handler(event):
     user_id = event.original_update.message.from_id.user_id
 
     if user_id == SHMA_ID:
-        if message.split('\n')[0] == "🎣 [Рыбалка] 🎣":
+        if any((
+            message.startswith("🎣 [Рыбалка] 🎣"),
+            message.startswith("От вашего врага давно не было вестей"),
+            message.split('\n')[0].startswith("Нападающий") and message.split('\n')[1].startswith("Защищающийся"),
+            re.match(r"^.+У вас больше не осталось сил для сражений", message, re.IGNORECASE | re.DOTALL)
+        )):
             print(f"Deleting message from SHMALALA after {TIMEOUT_SHMA} seconds")
             sleep(TIMEOUT_SHMA)
             await client.delete_messages(entity=CHAT_ID, message_ids=[message_id])
     else:
         if any((
-            re.match(r"^(@shmalala_bot)?\s*Шма\s*.*рыбалка", message, re.IGNORECASE),
-            re.match(r"^(?:@shmalala_bot)?\s*(?:Шма)?\s*.*Дуэль", message, re.IGNORECASE)
+            re.match(r"^(?:@shmalala_bot)?\s*Шма\s*.*рыбалка", message, re.IGNORECASE | re.DOTALL),
+            re.match(r"^(?:@shmalala_bot)?\s*(?:Шма)?\s*.*Дуэль", message, re.IGNORECASE | re.DOTALL)
         )):
             username = (await event.get_sender()).username
             print(f"Deleting message from {username} after {TIMEOUT_PEOPLE} seconds")
