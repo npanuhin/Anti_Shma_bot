@@ -1,4 +1,5 @@
 from time import sleep
+import logging
 import re
 
 from telethon import TelegramClient, events
@@ -17,6 +18,13 @@ CHAT_ID = settings["chat_id"]
 SHMA_ID = settings["shma_id"]
 
 client = TelegramClient("session", settings["api_id"], settings["api_hash"])
+
+logging.basicConfig(
+    filename="log.txt",
+    format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
+    datefmt='%H:%M:%S',
+    level=logging.INFO
+)
 
 
 # async def send_msg(msg: str):
@@ -49,7 +57,9 @@ async def my_event_handler(event):
             message.split('\n')[0].startswith("Нападающий") and message.split('\n')[1].startswith("Защищающийся"),
             re.match(r"^.+У вас больше не осталось сил для сражений", message, re.IGNORECASE | re.DOTALL)
         )):
-            print(f"Deleting message from SHMALALA after {TIMEOUT_SHMA} seconds")
+            notification = f"Deleting message from SHMALALA after {TIMEOUT_SHMA} seconds"
+            print(notification)
+            logging.info(notification)
             sleep(TIMEOUT_SHMA)
             await delete_msg(message_id)
     else:
@@ -62,7 +72,9 @@ async def my_event_handler(event):
             re.match(r"^(?:@shmalala_bot)?\s*Шма\s*.*покажи\s*(собаку|кота|кошку)", message, re.IGNORECASE | re.DOTALL)
         )):
             # username = (await event.get_sender()).username
-            print(f"Deleting message from {user_id} after {TIMEOUT_PEOPLE} seconds")
+            notification = f"Deleting message from {user_id} after {TIMEOUT_PEOPLE} seconds"
+            print(notification)
+            logging.info(notification)
             sleep(TIMEOUT_PEOPLE)
             await delete_msg(message_id)
 
