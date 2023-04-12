@@ -51,8 +51,10 @@ async def my_event_handler(event):
     user_id = event.original_update.message.from_id.user_id
 
     if user_id == SHMA_ID:
+        print(message, re.match(r"🎣\s*\[Бар Шмы\]\s*🎣", message, re.IGNORECASE | re.DOTALL))
         if any((
-            message.startswith("🎣 [Рыбалка] 🎣"),
+            re.match(r"🎣\s*\[Рыбалка\]\s*🎣", message, re.IGNORECASE | re.DOTALL),
+            re.match(r"🎣\s*\[Бар Шмы\]\s*🎣", message, re.IGNORECASE | re.DOTALL),
             message.startswith("От вашего врага давно не было вестей"),
             message.split('\n')[0].startswith("Нападающий") and message.split('\n')[1].startswith("Защищающийся"),
             re.match(r"^.+У вас больше не осталось сил для сражений", message, re.IGNORECASE | re.DOTALL)
@@ -63,20 +65,33 @@ async def my_event_handler(event):
             sleep(TIMEOUT_SHMA)
             await delete_msg(message_id)
     else:
-        if any((
-            re.match(r"^(?:@shmalala_bot)?\s*Шма\s*.*рыбалка", message, re.IGNORECASE | re.DOTALL),
-            re.match(r"^(?:@shmalala_bot)?\s*Шма\s*.*лови\s*рыбу", message, re.IGNORECASE | re.DOTALL),
-            re.match(r"^(?:@shmalala_bot)?\s*(?:Шма)?\s*.*Дуэль", message, re.IGNORECASE | re.DOTALL),
-            re.match(r"^(?:@shmalala_bot)?\s*(?:Шма)?\s*.*топ\s+(богачей|богатых)", message, re.IGNORECASE | re.DOTALL),
-            re.match(r"^(?:@shmalala_bot)?\s*(?:Шма)?\s*(мяу|гав)", message, re.IGNORECASE | re.DOTALL),
-            re.match(r"^(?:@shmalala_bot)?\s*Шма\s*.*покажи\s*(собаку|кота|кошку)", message, re.IGNORECASE | re.DOTALL)
+        trigger = False
+        while any((
+            message.startswith("@shmalala_bot"),
+            message.startswith("Шма")
         )):
-            # username = (await event.get_sender()).username
-            notification = f"Deleting message from {user_id} after {TIMEOUT_PEOPLE} seconds"
-            print(notification)
-            logging.info(notification)
-            sleep(TIMEOUT_PEOPLE)
-            await delete_msg(message_id)
+            message = message.removeprefix("@shmalala_bot").removeprefix("Шма").strip()
+            trigger = True
+
+        if trigger:
+            print(message, re.search(r"рыбалка", message, re.IGNORECASE | re.DOTALL))
+            print(message, re.search(r"начинаем\s+пить", message, re.IGNORECASE | re.DOTALL))
+            if any((
+                re.search(r"рыбалка", message, re.IGNORECASE | re.DOTALL),
+                re.search(r"лови\s+рыбу", message, re.IGNORECASE | re.DOTALL),
+                # re.search(r"дуэль", message, re.IGNORECASE | re.DOTALL),
+                re.search(r"топ\s+(богачей|богатых)", message, re.IGNORECASE | re.DOTALL),
+                re.match(r"(мяу|гав)", message, re.IGNORECASE | re.DOTALL),
+                re.search(r"покажи\s+(собаку|кота|кошку)", message, re.IGNORECASE | re.DOTALL),
+                re.search(r"начинаем\s+пить", message, re.IGNORECASE | re.DOTALL),
+                re.search(r"пьем\s+\w+", message, re.IGNORECASE | re.DOTALL)
+            )):
+                # username = (await event.get_sender()).username
+                notification = f"Deleting message from {user_id} after {TIMEOUT_PEOPLE} seconds"
+                print(notification)
+                logging.info(notification)
+                sleep(TIMEOUT_PEOPLE)
+                await delete_msg(message_id)
 
 client.start()
 print("Starting...")
