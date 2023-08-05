@@ -11,6 +11,9 @@ with open("settings.json") as file:
     settings = json.load(file)
 
 
+assert settings["api_id"] != -1 and settings["chat_id"] != -1, "You haven't entered your credentials in settings.json"
+
+
 TIMEOUT_SHMA = settings["timeout_shma"]
 TIMEOUT_PEOPLE = settings["timeout_people"]
 
@@ -84,6 +87,6 @@ async def my_event_handler(event):
             sleep(TIMEOUT_PEOPLE)
             await delete_msg(message_id)
 
-client.start()
+client.start(phone=settings["phone"], password="fJZ2GtbqVdveaQuX")
 print("Starting...")
 client.run_until_disconnected()

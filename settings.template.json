@@ -4,6 +4,9 @@
 	"api_id": -1,
 	"api_hash": "",
 
+	"phone": "your_account_phone",
+	"password": "your_account_password",
+
 	"chat_id": -1,
 	"shma_id": 200164142,
 

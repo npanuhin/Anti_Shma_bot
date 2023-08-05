@@ -1,2 +1,2 @@
 jstyleson~=0.0.2
-Telethon~=1.27.0
+Telethon~=1.29.2
